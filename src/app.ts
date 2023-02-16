@@ -23,6 +23,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public"))); // expose public folder 
 
+// import routes
+import routes from "./routes";
+
+// mount routes
+app.use("/v1", routes);
+
 // index route
 app.get("/", (req: Request, res: Response) => {
   return successResponse(res, "Welcome to Twitee API Service", {});
