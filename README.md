@@ -1,4 +1,4 @@
-# INTELLIGENCE INNOVATIONS BACKEND DEVELOPER ASSESSMENT
+# INTELLIGENT INNOVATIONS BACKEND DEVELOPER ASSESSMENT
 This is a mini and substandard runoff of Twitter powered by Nodejs, Express and TS
 
 ## Requirements
@@ -9,7 +9,7 @@ This is a mini and substandard runoff of Twitter powered by Nodejs, Express and 
 ## Features
 - Completely written in [Typescript](https://typescriptlang.org/)
 - [Express](https://expressjs.com/) Nodejs framework
-- [PostgreSQL](https://www.postgresql.org/docs/) Open Source Relational Database
+- [MySQL](https://dev.mysql.com/doc/) The world's most popular open source database
 - [Objection.js](https://vincit.github.io/objection.js/) SQL ORM for Nodejs
 - [Knexjs](https://knexjs.org/) SQL query builder
 
@@ -30,4 +30,4 @@ This is a mini and substandard runoff of Twitter powered by Nodejs, Express and 
 - `npm run dev`
 
 ## Documentation link
-- The endpoints for test of the service are provided in the [Postman Documentation]().
+- The endpoints for test of the service are provided in the [Postman Documentation](https://documenter.getpostman.com/view/25225100/2s93CGQb7m).

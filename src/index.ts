@@ -2,10 +2,19 @@ import dotenv from 'dotenv';
 dotenv.config(); // load env variables
 import 'reflect-metadata';
 import app from './app';
+import Knex from 'knex';
+import config from './knexfile';
+import { Model } from 'objection';
 
 (async () => {
     try {
-        const port = Number(process.env.PORT) || 5050;
+        // Initialize knex.
+        const knex = Knex(config.development);
+
+        // Bind all Models to a knex instance.
+        Model.knex(knex);
+        
+        const port = Number(process.env.PORT) || 1001;
 
         // spin up the server
         app.listen(port, () => {
