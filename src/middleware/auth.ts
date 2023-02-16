@@ -20,16 +20,12 @@ export const userAuth = async (
 
   if (!userDetails) {
     // Invalid Bearer token
-    return errorResponse(
-      res,
-      httpErrors.InvalidToken,
-      "Invalid authentication token"
-    );
+    return errorResponse(res, httpErrors.InvalidToken, "Invalid authentication token");
   }
 
-  let { name } = userDetails;
+  let { name, id } = userDetails;
 
   // Pass the user id to the request and execute subsequent requests
-  req.app.set("userDetails", { name });
+  req.app.set("userDetails", { name, id });
   next();
 };

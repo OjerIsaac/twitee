@@ -47,4 +47,4 @@ export const postTwit = async (req: Request, res: Response) => {
       console.log(error);
       return errorResponse(res, httpErrors.ServerError, "Something went wrong");
     }
-  };
+};

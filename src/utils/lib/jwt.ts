@@ -2,6 +2,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface IUserDetails {
   name: string;
+  id: string;
 }
 
 export default class JWT {
@@ -14,8 +15,8 @@ export default class JWT {
         token,
         String(process.env.JWT_SECRET)
       ) as JwtPayload;
-      let { name } = payload;
-      return { name };
+      let { name, id } = payload;
+      return { name, id };
     } catch (e) {
       return null;
     }
