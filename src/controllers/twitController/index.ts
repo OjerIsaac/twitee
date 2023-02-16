@@ -35,6 +35,13 @@ export const postTwit = async (req: Request, res: Response) => {
         if (!user) {
             return errorResponse(res, httpErrors.AccountNotFound, "User not found");
         }
+
+        // check that this is the user
+        let { id } = req.app.get("userDetails");
+
+        if (id != userId) {
+            return errorResponse(res, httpErrors.AccountNotFound, "Incorrect user ID");
+        }
   
         // Insert new twit into database
         const newTwit = await TwitModel.query().insert({
@@ -43,6 +50,41 @@ export const postTwit = async (req: Request, res: Response) => {
         });
   
       return successResponse(res, "Twit posted successfully", {});
+    } catch (error) {
+        console.log(error);
+        return errorResponse(res, httpErrors.ServerError, "Something went wrong");
+    }
+};
+
+/**
+ * @description delete a twit
+ * @param req Request object
+ * @param res Response object
+ * @returns ErrorResponse | SuccessResponse
+ */
+export const deleteTwit = async (req: Request, res: Response) => {
+    try {
+        const { userId, twitId } = req.params;
+
+        // check that this is the user
+        let { id } = req.app.get("userDetails");
+
+        if (id != userId) {
+            return errorResponse(res, httpErrors.AccountNotFound, "Incorrect User ID");
+        }
+
+        // check that user posted that twit
+        let findTwit = await TwitModel.query().select().where({ 'id' : twitId })
+        // console.log(findTwit)
+      
+        if (findTwit.length < 1) {
+            return errorResponse(res, httpErrors.AccountNotFound, "Can't find twit");
+        }
+
+        // delete twit
+        await TwitModel.query().where({ 'id' : twitId, 'user_id': userId}).del()
+  
+        return successResponse(res, "Twit deleted successfully", {});
     } catch (error) {
       console.log(error);
       return errorResponse(res, httpErrors.ServerError, "Something went wrong");
