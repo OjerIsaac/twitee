@@ -6,6 +6,7 @@ import { errorResponse, successResponse } from "../../utils/lib/response";
 import httpErrors from "../../utils/constants/httpErrors";
 import { generateErrorMessage } from "../../utils/lib/generate-error-messages";
 import path from "path";
+import JWT from "../../utils/lib/jwt";
 
 /**
  * @description register a new user
@@ -66,4 +67,43 @@ export const registerUser = async (req: Request, res: Response) => {
       console.log(error);
       return errorResponse(res, httpErrors.ServerError, "Something went wrong");
     }
-  };
+};
+
+/**
+ * @description login user
+ * @param req Request object
+ * @param res Response object
+ * @returns ErrorResponse | SuccessResponse
+ */
+export const loginUser = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    // find user in db
+    const user = await UsersTableModel.query().select().where("email", email);
+    // console.log(user[0])
+
+    if (user.length < 1) {
+      return errorResponse(res, httpErrors.AccountNotFound, "User doesn't exist.");
+    }
+
+    // check password validity
+    let passwordCorrect = await bcrypt.compare(password, user[0].password);
+
+    if (!passwordCorrect) {
+      return errorResponse(res, httpErrors.AccountError, "Wrong password.");
+    }
+
+    let name = user[0].email;
+    let id = user[0].id;
+    let expiresIn = "1h";
+
+    // create and assign token
+    const token = JWT.generateAccessToken(id, name, expiresIn);
+
+    return successResponse(res, "User login successful", { token, data: { name } });
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res, httpErrors.ServerError, "Something went wrong");
+  }
+};
