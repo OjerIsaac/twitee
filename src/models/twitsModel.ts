@@ -20,7 +20,7 @@ class TwitModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: UserModel,
         join: {
-          from: "twits.userId",
+          from: "twits.user_id",
           to: "users.id",
         },
       },

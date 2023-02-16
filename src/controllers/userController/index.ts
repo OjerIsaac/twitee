@@ -26,4 +26,20 @@ export const getUserProfile = async (req: Request, res: Response) => {
     return errorResponse(res, httpErrors.ServerError, "Something went wrong");
   }
 };
+
+/**
+ * @description Retrieve all user twits
+ * @param req Request object
+ * @param res Response object
+ * @returns ErrorResponse | SuccessResponse
+ */
+export const getUserTwits = async (req: Request, res: Response) => {
+  try {
+
+    return successResponse(res, "User twits retrieved successfully", {  });
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res, httpErrors.ServerError, "Something went wrong");
+  }
+};
   
