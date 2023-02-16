@@ -5,7 +5,6 @@ import bcrypt from "bcrypt";
 import { errorResponse, successResponse } from "../../utils/lib/response";
 import httpErrors from "../../utils/constants/httpErrors";
 import { generateErrorMessage } from "../../utils/lib/generate-error-messages";
-import path from "path";
 import JWT from "../../utils/lib/jwt";
 
 /**

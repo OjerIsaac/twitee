@@ -4,9 +4,9 @@ import UserModel from "./usersModel";
 interface Twit {
   id: number;
   twit: string;
-  attachment?: string | null;
+  attachment?: string | null; // twits may come with video, images or any file
   likes?: number | null;
-  userId: number;
+  user_id: number;
 }
 
 class TwitModel extends Model {
