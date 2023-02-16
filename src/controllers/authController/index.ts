@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import UsersTableModel from "../../models/users";
+import UsersTableModel from "../../models/usersModel";
 import _ from "lodash";
 import bcrypt from "bcrypt";
 import { errorResponse, successResponse } from "../../utils/lib/response";
