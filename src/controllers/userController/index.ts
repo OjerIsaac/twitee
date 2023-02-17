@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import UsersTableModel from "../../models/usersModel";
 import TwitModel from "../../models/twitsModel";
-import CommentModel from "../../models/commentModel";
 import _ from "lodash";
 import { errorResponse, successResponse } from "../../utils/lib/response";
 import httpErrors from "../../utils/constants/httpErrors";
