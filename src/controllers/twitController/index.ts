@@ -103,7 +103,7 @@ export const deleteTwit = async (req: Request, res: Response) => {
  */
 export const postComment = async (req: Request, res: Response) => {
     try {
-        const { twitId } = req.params;
+        const { twitId, userId } = req.params;
         const { comment } = req.body;
 
         const error: any = {};
@@ -126,9 +126,17 @@ export const postComment = async (req: Request, res: Response) => {
             return errorResponse(res, httpErrors.AccountNotFound, "Twit not found");
         }
 
+        // check that the user is in the app
+        const user = await UsersTableModel.query().findById(userId);
+        
+        if (!user) {
+            return errorResponse(res, httpErrors.AccountNotFound, "Please register to comment");
+        }
+
         // Insert new comment
         const newComment = await CommentModel.query().insert({
             comment,
+            user_id: userId,
             twit_id: twitId,
         });
   
