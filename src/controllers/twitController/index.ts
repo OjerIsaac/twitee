@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { Model } from "objection";
 import UsersTableModel from "../../models/usersModel";
-import TwitModel from "../../models/twitsModel";
-import LikeModel from "../../models/likesModel";
-import CommentModel from "../../models/commentModel";
+import TwitModel, { ITwit } from "../../models/twitsModel";
+import LikeModel, { ILikes } from "../../models/likesModel";
+import CommentModel, { IComment } from "../../models/commentModel";
 import _ from "lodash";
 import { errorResponse, successResponse } from "../../utils/lib/response";
 import httpErrors from "../../utils/constants/httpErrors";
@@ -49,11 +49,13 @@ export const postTwit = async (req: Request, res: Response) => {
         let likes = 0; // default
   
         // Insert new twit into database
-        const newTwit = await TwitModel.query().insert({
+        const newTwit: ITwit = {
             twit: twit,
             likes: likes,
-            user_id: userId,
-        });
+            user_id: parseInt(userId),
+        }
+
+        await TwitModel.query().insert(newTwit);
   
       return successResponse(res, "Twit posted successfully", {...newTwit});
     } catch (error) {
@@ -143,12 +145,14 @@ export const postComment = async (req: Request, res: Response) => {
         }
 
         // Insert new comment
-        const newComment = await CommentModel.query().insert({
+        const newComment: IComment = {
             comment,
-            user_id: userId,
-            twit_id: twitId,
-        });
+            user_id: parseInt(userId),
+            twit_id: parseInt(twitId),
+        }
   
+        await CommentModel.query().insert(newComment);
+
         return successResponse(res, "Comment posted successfully", { ...newComment });
     } catch (error) {
         console.log(error);
@@ -187,10 +191,15 @@ export const likeTwit = async (req: Request, res: Response) => {
         }
 
         // increment the like count and create a new like record
-        let dd = await TwitModel.query().findById(twitId).update({ likes: Model.raw("?? + 1", ["likes"]) });
+        await TwitModel.query().findById(twitId).update({ likes: Model.raw("?? + 1", ["likes"]) });
 
         // record in the like model
-        await LikeModel.query().insert({ twit_id: twitId, user_id: userId });
+        const newLike: ILikes = {
+            user_id: parseInt(userId),
+            twit_id: parseInt(twitId),
+        }
+  
+        await LikeModel.query().insert(newLike);
 
         return successResponse(res, "Twit liked successfully", {});
 

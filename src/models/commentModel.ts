@@ -2,12 +2,14 @@ import { Model } from "objection";
 import TwitModel from "./twitsModel";
 import UsersTableModel from "./usersModel";
 
-interface Comment {
-  id: number;
+export interface IComment {
+  id?: number;
   comment: string;
   user_id: number;
   twit_id: number;
 }
+
+interface CommentModel extends IComment {}
 
 class CommentModel extends Model {
   static get tableName() {

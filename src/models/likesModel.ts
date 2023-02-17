@@ -2,11 +2,13 @@ import { Model } from "objection";
 import UserModel from "./usersModel";
 import TwitModel from "./twitsModel";
 
-interface Like {
-  id: number;
+export interface ILikes {
+  id?: number;
   user_id: number;
   twit_id: number;
 }
+
+interface LikeModel extends ILikes {}
 
 class LikeModel extends Model {
   static get tableName() {

@@ -1,13 +1,13 @@
 import { Model } from "objection";
 
-interface UsersTable {
+export interface IUsers {
   id: number;
   name: string;
   email: string;
   password: string;
 }
 
-interface UsersTableModel extends UsersTable {}
+interface UsersTableModel extends IUsers {}
 
 class UsersTableModel extends Model {
   static get tableName() {

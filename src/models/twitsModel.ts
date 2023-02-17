@@ -2,13 +2,15 @@ import { Model } from "objection";
 import UserModel from "./usersModel";
 import LikeModel from "./likesModel";
 
-interface Twit {
-  id: number;
+export interface ITwit {
+  id?: number;
   twit: string;
   likes: number;
   attachment?: string | null; // twits may come with video, images or any file
   user_id: number;
 }
+
+interface TwitModel extends ITwit {}
 
 class TwitModel extends Model {
   static get tableName() {
