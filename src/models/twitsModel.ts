@@ -1,6 +1,7 @@
 import { Model } from "objection";
 import UserModel from "./usersModel";
 import LikeModel from "./likesModel";
+import CommentModel from "./commentModel";
 
 export interface ITwit {
   id?: number;
@@ -33,6 +34,14 @@ class TwitModel extends Model {
         join: {
           from: "twits.id",
           to: "likes.twit_id",
+        },
+      },
+      comments: {
+        relation: Model.HasManyRelation,
+        modelClass: CommentModel,
+        join: {
+          from: "twits.id",
+          to: "comments.twit_id",
         },
       }
     }

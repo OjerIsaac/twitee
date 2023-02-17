@@ -30,7 +30,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
 };
 
 /**
- * @description Retrieve all user twits
+ * @description Retrieve all user twits, comments & likes
  * @param req Request object
  * @param res Response object
  * @returns ErrorResponse | SuccessResponse
@@ -45,12 +45,12 @@ export const getUserTwits = async (req: Request, res: Response) => {
       return errorResponse(res, httpErrors.AccountNotFound, "User doesn't exist");
     }
 
-    // fetch twits
-    const twits = await TwitModel.query().select('id', 'twit', 'attachment', 'likes').where({'user_id' : id} )
-    console.log(twits[0].id)
-
-    // fetch comments
-    // const comments = await CommentModel.query().select('twit', 'attachment', 'likes').where({ 'user_id' : id })
+    const twits = await TwitModel.query()
+      .select('twits.*')
+      .withGraphFetched('[comments]')
+      .joinRelated('user')
+      .where('user_id', id)
+      .orderBy('twits.created_at', 'desc');
 
     return successResponse(res, "User twits retrieved successfully", { twits });
   } catch (error) {
