@@ -43,10 +43,13 @@ export const postTwit = async (req: Request, res: Response) => {
         if (id != userId) {
             return errorResponse(res, httpErrors.AccountNotFound, "Incorrect user ID");
         }
+
+        let likes = 0; // default
   
         // Insert new twit into database
         const newTwit = await TwitModel.query().insert({
             twit,
+            likes: likes,
             user_id: userId,
         });
   

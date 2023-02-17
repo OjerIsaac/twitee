@@ -5,7 +5,7 @@ interface Twit {
   id: number;
   twit: string;
   attachment?: string | null; // twits may come with video, images or any file
-  likes?: number | null;
+  likes: number;
   user_id: number;
 }
 
