@@ -45,3 +45,10 @@ This is the backend service of a mini and substandard runoff of Twitter powered 
 
 ## Documentation link
 - The endpoints for test of the service are provided in the [Postman Documentation](https://documenter.getpostman.com/view/25225100/2s93CGQb7m).
+
+## Miscellaneous
+- Base url: `https://twitee-api.vercel.app/`
+- Post twit: `/twit/{:userId}/post-twit`
+- Delete Twit: `/twit/{:userId}/delete-twit/{:twitId}`
+- Post comment: `/twit/{:twitId}/post-comment/{:userId}`
+- Like Twit: `/twit/{:twitId}/like-twit/{:userId}`
