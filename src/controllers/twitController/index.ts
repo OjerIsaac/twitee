@@ -128,7 +128,6 @@ export const postComment = async (req: Request, res: Response) => {
 
         // check that the user is in the app
         const user = await UsersTableModel.query().findById(userId);
-        
         if (!user) {
             return errorResponse(res, httpErrors.AccountNotFound, "Please register to comment");
         }
