@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { Model } from "objection";
 import UsersTableModel from "../../models/usersModel";
 import TwitModel from "../../models/twitsModel";
+import LikeModel from "../../models/likesModel";
 import CommentModel from "../../models/commentModel";
 import _ from "lodash";
 import { errorResponse, successResponse } from "../../utils/lib/response";
@@ -43,10 +45,13 @@ export const postTwit = async (req: Request, res: Response) => {
         if (id != userId) {
             return errorResponse(res, httpErrors.AccountNotFound, "Incorrect user ID");
         }
+
+        let likes = 0; // default
   
         // Insert new twit into database
         const newTwit = await TwitModel.query().insert({
-            twit,
+            twit: twit,
+            likes: likes,
             user_id: userId,
         });
   
@@ -118,6 +123,7 @@ export const postComment = async (req: Request, res: Response) => {
 
         // find the twit, make sure it's present
         const twit = await TwitModel.query().findById(twitId);
+        // console.log(twit)
         
         if (!twit) {
             return errorResponse(res, httpErrors.AccountNotFound, "Twit not found");
@@ -127,6 +133,13 @@ export const postComment = async (req: Request, res: Response) => {
         const user = await UsersTableModel.query().findById(userId);
         if (!user) {
             return errorResponse(res, httpErrors.AccountNotFound, "Please register to comment");
+        }
+
+        // check the user bearer token
+        let { id } = req.app.get("userDetails");
+
+        if (id != userId) {
+            return errorResponse(res, httpErrors.AccountNotFound, "Incorrect user ID");
         }
 
         // Insert new comment
@@ -152,27 +165,6 @@ export const postComment = async (req: Request, res: Response) => {
 export const likeTwit = async (req: Request, res: Response) => {
     try {
         const { twitId, userId } = req.params;
-        const { like } = req.body;
-
-        const error: any = {};
-
-        if (!comment) {
-            error.name = "Comment is empty";
-        }
-
-        const hasErrors: boolean = Object.values(error).length >= 1;
-
-        if (hasErrors) {
-            const errorMessage = generateErrorMessage(error);
-            return errorResponse(res, httpErrors.ValidationError, errorMessage);
-        }
-
-        // find the twit, make sure it's present
-        const twit = await TwitModel.query().findById(twitId);
-        
-        if (!twit) {
-            return errorResponse(res, httpErrors.AccountNotFound, "Twit not found");
-        }
 
         // check that the user is in the app
         const user = await UsersTableModel.query().findById(userId);
@@ -180,14 +172,28 @@ export const likeTwit = async (req: Request, res: Response) => {
             return errorResponse(res, httpErrors.AccountNotFound, "Please register to comment");
         }
 
-        // Insert new comment
-        const newComment = await CommentModel.query().insert({
-            comment,
-            user_id: userId,
-            twit_id: twitId,
-        });
-  
-        return successResponse(res, "Comment posted successfully", { ...newComment });
+        // check the user bearer token
+        let { id } = req.app.get("userDetails");
+
+        if (id != userId) {
+            return errorResponse(res, httpErrors.AccountNotFound, "Incorrect user ID");
+        }
+
+        // check if the user has already liked the twit
+        const like = await LikeModel.query().where({ twit_id: twitId, user_id: userId }).first();
+
+        if (like) {
+            return errorResponse(res, httpErrors.AccountExists, "You have already liked this twit");
+        }
+
+        // increment the like count and create a new like record
+        let dd = await TwitModel.query().findById(twitId).update({ likes: Model.raw("?? + 1", ["likes"]) });
+
+        // record in the like model
+        await LikeModel.query().insert({ twit_id: twitId, user_id: userId });
+
+        return successResponse(res, "Twit liked successfully", {});
+
     } catch (error) {
         console.log(error);
         return errorResponse(res, httpErrors.ServerError, "Something went wrong");

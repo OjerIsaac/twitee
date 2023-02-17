@@ -5,6 +5,7 @@ import LikeModel from "./likesModel";
 interface Twit {
   id: number;
   twit: string;
+  likes: number;
   attachment?: string | null; // twits may come with video, images or any file
   user_id: number;
 }
