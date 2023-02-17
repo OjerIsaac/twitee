@@ -42,4 +42,22 @@ export const getUserTwits = async (req: Request, res: Response) => {
     return errorResponse(res, httpErrors.ServerError, "Something went wrong");
   }
 };
-  
+
+/**
+ * @description logout user
+ * @param req Request object
+ * @param res Response object
+ * @returns ErrorResponse | SuccessResponse
+ */
+export const logoutUser = async (req: Request, res: Response) => {
+  try {
+    delete req.headers.authorization; // remove the token from headers
+
+    let { id } = req.app.get("userDetails");
+
+    return successResponse(res, "User logout successful", { id });
+  } catch (error) {
+    console.log(error);
+    return errorResponse(res, httpErrors.ServerError, "Something went wrong");
+  }
+};
