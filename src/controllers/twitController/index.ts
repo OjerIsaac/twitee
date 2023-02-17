@@ -49,7 +49,6 @@ export const postTwit = async (req: Request, res: Response) => {
         // Insert new twit into database
         const newTwit: ITwit = {
             twit: twit,
-            likes: 0,
             user_id: parseInt(userId),
         }
 
