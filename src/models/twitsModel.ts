@@ -6,7 +6,7 @@ import CommentModel from "./commentModel";
 export interface ITwit {
   id?: number;
   twit: string;
-  likes: number;
+  likes?: number;
   attachment?: string | null; // twits may come with video, images or any file
   user_id: number;
 }

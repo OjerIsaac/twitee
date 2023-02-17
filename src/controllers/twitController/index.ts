@@ -46,12 +46,12 @@ export const postTwit = async (req: Request, res: Response) => {
             return errorResponse(res, httpErrors.AccountNotFound, "Incorrect user ID");
         }
 
-        let likes = 0; // default
+        let like = 0; // default
   
         // Insert new twit into database
         const newTwit: ITwit = {
             twit: twit,
-            likes: likes,
+            likes: like,
             user_id: parseInt(userId),
         }
 
