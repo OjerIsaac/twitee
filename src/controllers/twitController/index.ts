@@ -43,13 +43,10 @@ export const postTwit = async (req: Request, res: Response) => {
         if (id != userId) {
             return errorResponse(res, httpErrors.AccountNotFound, "Incorrect user ID");
         }
-
-        let likes = 0; // default
   
         // Insert new twit into database
         const newTwit = await TwitModel.query().insert({
             twit,
-            likes: likes,
             user_id: userId,
         });
   
@@ -105,6 +102,57 @@ export const postComment = async (req: Request, res: Response) => {
     try {
         const { twitId, userId } = req.params;
         const { comment } = req.body;
+
+        const error: any = {};
+
+        if (!comment) {
+            error.name = "Comment is empty";
+        }
+
+        const hasErrors: boolean = Object.values(error).length >= 1;
+
+        if (hasErrors) {
+            const errorMessage = generateErrorMessage(error);
+            return errorResponse(res, httpErrors.ValidationError, errorMessage);
+        }
+
+        // find the twit, make sure it's present
+        const twit = await TwitModel.query().findById(twitId);
+        
+        if (!twit) {
+            return errorResponse(res, httpErrors.AccountNotFound, "Twit not found");
+        }
+
+        // check that the user is in the app
+        const user = await UsersTableModel.query().findById(userId);
+        if (!user) {
+            return errorResponse(res, httpErrors.AccountNotFound, "Please register to comment");
+        }
+
+        // Insert new comment
+        const newComment = await CommentModel.query().insert({
+            comment,
+            user_id: userId,
+            twit_id: twitId,
+        });
+  
+        return successResponse(res, "Comment posted successfully", { ...newComment });
+    } catch (error) {
+        console.log(error);
+        return errorResponse(res, httpErrors.ServerError, "Something went wrong");
+    }
+};
+
+/**
+ * @description post a comment
+ * @param req Request object
+ * @param res Response object
+ * @returns ErrorResponse | SuccessResponse
+ */
+export const likeTwit = async (req: Request, res: Response) => {
+    try {
+        const { twitId, userId } = req.params;
+        const { like } = req.body;
 
         const error: any = {};
 

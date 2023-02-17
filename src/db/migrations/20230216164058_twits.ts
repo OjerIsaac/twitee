@@ -4,7 +4,6 @@ async function createTwitsTable(knex: Knex, table: Knex.CreateTableBuilder) {
   table.increments('id').primary();
   table.text('twit').notNullable();
   table.string('attachment').nullable();
-  table.integer('likes').notNullable();
   table.integer('user_id').unsigned().notNullable(); // add a foreign key column
   table.foreign('user_id').references('users.id'); // define the foreign key constraint
   table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();

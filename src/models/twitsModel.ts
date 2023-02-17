@@ -1,11 +1,11 @@
 import { Model } from "objection";
 import UserModel from "./usersModel";
+import LikeModel from "./likesModel";
 
 interface Twit {
   id: number;
   twit: string;
   attachment?: string | null; // twits may come with video, images or any file
-  likes: number;
   user_id: number;
 }
 
@@ -24,7 +24,15 @@ class TwitModel extends Model {
           to: "users.id",
         },
       },
-    };
+      likes: {
+        relation: Model.HasManyRelation,
+        modelClass: LikeModel,
+        join: {
+          from: "twits.id",
+          to: "likes.twit_id",
+        },
+      }
+    }
   }
 }
 
