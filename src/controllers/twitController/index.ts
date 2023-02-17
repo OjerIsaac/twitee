@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UsersTableModel from "../../models/usersModel";
 import TwitModel from "../../models/twitsModel";
+import CommentModel from "../../models/commentModel";
 import _ from "lodash";
 import { errorResponse, successResponse } from "../../utils/lib/response";
 import httpErrors from "../../utils/constants/httpErrors";
@@ -49,7 +50,7 @@ export const postTwit = async (req: Request, res: Response) => {
             user_id: userId,
         });
   
-      return successResponse(res, "Twit posted successfully", {});
+      return successResponse(res, "Twit posted successfully", {...newTwit});
     } catch (error) {
         console.log(error);
         return errorResponse(res, httpErrors.ServerError, "Something went wrong");
@@ -88,5 +89,49 @@ export const deleteTwit = async (req: Request, res: Response) => {
     } catch (error) {
       console.log(error);
       return errorResponse(res, httpErrors.ServerError, "Something went wrong");
+    }
+};
+
+/**
+ * @description post a comment
+ * @param req Request object
+ * @param res Response object
+ * @returns ErrorResponse | SuccessResponse
+ */
+export const postComment = async (req: Request, res: Response) => {
+    try {
+        const { twitId } = req.params;
+        const { comment } = req.body;
+
+        const error: any = {};
+
+        if (!comment) {
+            error.name = "Comment is empty";
+        }
+
+        const hasErrors: boolean = Object.values(error).length >= 1;
+
+        if (hasErrors) {
+            const errorMessage = generateErrorMessage(error);
+            return errorResponse(res, httpErrors.ValidationError, errorMessage);
+        }
+
+        // find the twit, make sure it's present
+        const twit = await TwitModel.query().findById(twitId);
+        
+        if (!twit) {
+            return errorResponse(res, httpErrors.AccountNotFound, "Twit not found");
+        }
+
+        // Insert new comment
+        const newComment = await CommentModel.query().insert({
+            comment,
+            twit_id: twitId,
+        });
+  
+        return successResponse(res, "Comment posted successfully", { ...newComment });
+    } catch (error) {
+        console.log(error);
+        return errorResponse(res, httpErrors.ServerError, "Something went wrong");
     }
 };
